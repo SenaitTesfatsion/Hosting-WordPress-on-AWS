@@ -24,6 +24,8 @@ This project shows hosting and deploying a production-ready WordPress website on
 * [Register A Domain Name In Route53](#register-a-domain-name-in-route53)
 * [Point Domain Name to AWS Application Load Balancer](#point-domain-name-to-aws-application-load-balancer)
 
+![3tier](https://user-images.githubusercontent.com/110143245/221963546-63f1aa6c-b8d1-4601-9c7b-40c1432e83f1.png)
+
 
 # Create the VPC with Public and Private Subnets 
 _The VPC is designed in a three-tier architecture. The first tier which will be the web tier has two public subnets in two different AZs. The Second tier will be the application tier  with two public subnets in two different AZS. The third tier will be the database tier with two private subnets in two different AZs._
