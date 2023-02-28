@@ -30,6 +30,8 @@ This project shows hosting and deploying a production-ready WordPress website on
 # Create the VPC with Public and Private Subnets 
 _The VPC is designed in a three-tier architecture. The first tier which will be the web tier has two public subnets in two different AZs. The Second tier will be the application tier  with two public subnets in two different AZS. The third tier will be the database tier with two private subnets in two different AZs._
 
+![vpc1](https://user-images.githubusercontent.com/110143245/221964506-5a19e568-caa9-4ec3-9c32-b17e641b3730.png)
+
 ### Stage 1 – Create the VPC
 - Head to the VPC Dashboard 
 - Select the appropriate region for the VPC
