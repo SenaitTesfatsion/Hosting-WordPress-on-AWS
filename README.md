@@ -436,7 +436,7 @@ service httpd restart
 
 
 # Create Application Load Balancer
-## Stage 1– Create two EC2 instances in the private subnet
+### Stage 1– Create two EC2 instances in the private subnet
 - Navigate to AWS services Dashboard
 - Select **EC2** 
 - Click **Launch Instance**
@@ -501,8 +501,8 @@ Copy the **DNS name** and paste it to the **WordPress Address (URL)** and **Site
 Click **Save Changes**
 
 
-
-# Register a Domain Name in Route53
+# Launch The WordPress Site
+### Stage 1 - Register a Domain Name in Route53
 - Navigate to the AWS services dashboard, Select “Route 53”
 - Under **Register domain**, Type the desired Domain name and Click **Check**
 - Click **Continue**
@@ -511,8 +511,8 @@ Click **Save Changes**
 - Click **Close** 
 
 
-# Point Domain Name to AWS Application Load Balancer
-- Navigate to the AWS services dashboard, Select “Route5”3
+### Stage 2 - Create a Record Set in Route53
+- Navigate to the AWS services dashboard, Select “Route53”
 - Under Route53 Dashboard, Click **Hosted zone**
 - Select the **registered domain name**
 - Click **Create record**
@@ -529,10 +529,65 @@ Toggle On “Alias”
 - Copy the **URL** and Paste it to the **WordPress Address (URL)** and **Site Address (URL)**
 - Click **Save Changes**
 
+### Stage 3 - Register for an SSL Certificate in AWS Certificate Manager
+- Navigate to the AWS services dashboard, Select “Certificate Manager”
+- Under Certificate Manager Dashboard, Click **Request certificate**
+- Select the **request a public certificate** and Click "Next"
+- For the **Domain names**, type the domain name the certificate is requested for
+- For "Add another name to this certificate", type "*."
+- Leave everything as default and Click "Request"
+- Select **Create records in Route53**
+- Select the domain name and the wild card and Click "Create records"
+- Refresh the page and check if the **status** of the request is "issued"
 
 
+### Stage 4 - Create an HTTPS Listener
+- Navigate to the AWS services dashboard, Select “EC2"
+- Under EC2 Dashboard, Click **Load Balancers**
+- Click **Listeners** and Select "Add listener"
+- For the **Protocol** change it to "HTTPS"
+- From the **Default actions** dropdown menu, Select "Forward"
+- From the *Target group** dropdown menu, Select the target group created for this project
+- Under *Default SSL certificate**, Select the ACM certificate created for this project
+- Leave everything else as default and click "Add"
+### Stage 5 - Edit HTTP Listener to Redirect Traffic to HTTPS
+- On the **Load balancers** dashboard, Select "HTTP:80" and Click "Edit"
+- Under the **Default actions** dropdown menu, Select "Redirect"
+- For the **port** enter "443"
+- Click **Save Changes**
+- Modify the wp-config file
+- **SSH** to the private server in the private subnet and write the following commands,
+~~~
+sudo su
+nano /var/www/html/wp-config.php
 
+~~~
+- Enter the following code in the nano text editor
+~~~
+/* SSL Settings */
+define('FORCE_SSL_ADMIN', true);
 
+// Get true SSL status from AWS load balancer
+if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+  $_SERVER['HTTPS'] = '1';
+}
+~~~
+- Open the HTTPS domain name in the browser to access the WordPress site
+- Add **“/wp-admin”** to the end of the URL, this opens the WordPress login page
+- Once logged in Select **Setting → General**
+- Copy the **URL** and Paste it to the **WordPress Address (URL)** and **Site Address (URL)**
+- Click **Save Changes**
+
+### Stage 6 - Install WordPress Theme and Template
+- log in to the WordPress site as the admin
+- Select **Appearance**
+- Under *Themes**, Click "Add New"
+- Install the "Astra Theme"
+- Click "Activate"
+- Click **Get Started** to install the template
+- Click "Build Your Website"
+- Select "Elementor"
+- Search for the desired template for your website
 
 
 
