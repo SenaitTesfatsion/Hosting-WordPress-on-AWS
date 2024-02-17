@@ -23,6 +23,7 @@ This project shows hosting and deploying a production-ready WordPress website on
 * [Create Application Load Balancer](#create-application-load-balancer)
 * [Register A Domain Name In Route53](#register-a-domain-name-in-route53)
 * [Point Domain Name to AWS Application Load Balancer](#point-domain-name-to-aws-application-load-balancer)
+* [Launch The WordPress Site](#launch-the-wordpress-site)
 
 ![3tier](https://user-images.githubusercontent.com/110143245/221963546-63f1aa6c-b8d1-4601-9c7b-40c1432e83f1.png)
 
