@@ -1,5 +1,5 @@
 # Hosting-WordPress-on-AWS
-This project shows hosting and deploying a production-ready WordPress website on AWS.
+This project outlines the comprehensive procedure for hosting a fully functional WordPress website on the AWS infrastructure, tailored to meet the demanding standards of production-level performance, security, efficiency, and reliability.
 
 # Cloud Tools Used;
 - _Virtual Private Gateway (VPC)_
