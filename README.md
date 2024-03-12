@@ -359,19 +359,25 @@ Copy the one under **Using the NFS client**
 1.	### Create the html directory and mount the EFS to it
 ~~~
 sudo su
-yum update -y
-mkdir -p /var/www/html
+sudo yum update -y
+sudo mkdir -p /var/www/html
 ~~~
 - Navigate to the AWS services dashboard, Select **EFS**
 - Select The application EFS created for this project
 - Click **Attach**
 - Select **Mount via DNS**
 - Copy the one under **Using the NFS client**
-- Paste it on the command line
+- Paste it on the environment variable
 ~~~
-Sudo mount -t nfs4 -o <Paste it here> /var/www/html
+# environment variable
+~~~
+EFS_DNS_NAME=fs-064e9505819af10a4.efs.us-east-1.amazonaws.com
 ~~~
 
+# mount the efs to the html directory 
+~~~
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport "$EFS_DNS_NAME":/ /var/www/html
+~~~
 
 2.	### Install apache
 ~~~ 
@@ -380,21 +386,47 @@ sudo systemctl enable httpd
 sudo systemctl start httpd
 ~~~
 
-3.	### Install php 7.4
+3.# install php 8 along with several necessary extensions for wordpress to run
 ~~~
-sudo amazon-linux-extras enable php7.4
-sudo yum clean metadata
-sudo yum install php php-common php-pear -y
-sudo yum install php-{cgi,curl,mbstring,gd,mysqlnd,gettext,json,xml,fpm,intl,zip} -y
+sudo dnf install -y \
+php \
+php-cli \
+php-cgi \
+php-curl \
+php-mbstring \
+php-gd \
+php-mysqlnd \
+php-gettext \
+php-json \
+php-xml \
+php-fpm \
+php-intl \
+php-zip \
+php-bcmath \
+php-ctype \
+php-fileinfo \
+php-openssl \
+php-pdo \
+php-tokenizer
 ~~~
 
-4.	### Install mysql5.7
+4.	### Install mysql version 8 community repository
 ~~~
-rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
-sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-sudo yum install mysql-community-server -y
-sudo systemctl enable mysqld
+sudo wget https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm 
+~~~
+
+# install the mysql server
+~~~
+sudo dnf install -y mysql80-community-release-el9-1.noarch.rpm 
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023
+sudo dnf repolist enabled | grep "mysql.*-community.*"
+sudo dnf install -y mysql-community-server 
+~~~
+
+# start and enable the mysql server
+~~~
 sudo systemctl start mysqld
+sudo systemctl enable mysqld
 ~~~
 
 5.	### Set permissions
@@ -410,29 +442,31 @@ chown apache:apache -R /var/www/html
 ~~~
 wget https://wordpress.org/latest.tar.gz
 tar -xzf latest.tar.gz
-cp -r wordpress/* /var/www/html/
+sudo cp -r wordpress/* /var/www/html/
+
 ~~~
 
 
 7.	### Create the wp-config.php file
 ~~~
-cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+sudo cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+
 ~~~
 
 
 8.	### Edit the wp-config.php file
 ~~~
-nano /var/www/html/wp-config.php
+sudo vi /var/www/html/wp-config.php
 Update the Database Credentials using the credentials of the RDS created in this project
 ~~~
 
 9.	### Restart the webserver
 ~~~
-service httpd restart
+sudo service httpd restart
 ~~~
 
 
-10.	### Navigate to EC2 dashboard, Select the EC2 Public IPV4 address and open it on any browser to open WordPress
+10.	### Navigate to EC2 dashboard, Select the ALB DNS Name and open it on any browser to open WordPress
 
 
 
