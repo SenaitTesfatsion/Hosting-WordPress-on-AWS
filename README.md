@@ -369,24 +369,24 @@ sudo mkdir -p /var/www/html
 - Copy the one under **Using the NFS client**
 - Paste it on the environment variable
 - 
-# environment variable
+2. ### environment variable
 ~~~
 EFS_DNS_NAME=fs-064e9505819af10a4.efs.us-east-1.amazonaws.com
 ~~~
 
-# mount the efs to the html directory 
+3. ### mount the efs to the html directory 
 ~~~
 sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport "$EFS_DNS_NAME":/ /var/www/html
 ~~~
 
-2.	### Install apache
+4.	### Install apache
 ~~~ 
 sudo yum install -y httpd httpd-tools mod_ssl
 sudo systemctl enable httpd 
 sudo systemctl start httpd
 ~~~
 
-3.# install php 8 along with several necessary extensions for wordpress to run
+5. ### install php 8 along with several necessary extensions for wordpress to run
 
 ~~~
 sudo dnf install -y \
@@ -411,13 +411,13 @@ php-pdo \
 php-tokenizer
 ~~~
 
-4.	### Install mysql version 8 community repository
+6.	### Install mysql version 8 community repository
    
 ~~~
 sudo wget https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm 
 ~~~
 
-# install the mysql server
+7. ### install the mysql server
 ~~~
 sudo dnf install -y mysql80-community-release-el9-1.noarch.rpm 
 sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023
@@ -425,13 +425,13 @@ sudo dnf repolist enabled | grep "mysql.*-community.*"
 sudo dnf install -y mysql-community-server 
 ~~~
 
-# start and enable the mysql server
+8. ### start and enable the mysql server
 ~~~
 sudo systemctl start mysqld
 sudo systemctl enable mysqld
 ~~~
 
-5.	### Set permissions
+9.	### Set permissions
 ~~~
 sudo usermod -a -G apache ec2-user
 sudo chown -R ec2-user:apache /var/www
@@ -440,7 +440,7 @@ sudo find /var/www -type f -exec sudo chmod 0664 {} \;
 chown apache:apache -R /var/www/html 
 ~~~
 
-6.	### Download WordPress files
+10.	### Download WordPress files
 ~~~
 wget https://wordpress.org/latest.tar.gz
 tar -xzf latest.tar.gz
@@ -449,26 +449,26 @@ sudo cp -r wordpress/* /var/www/html/
 ~~~
 
 
-7.	### Create the wp-config.php file
+11.	### Create the wp-config.php file
 ~~~
 sudo cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
 
 ~~~
 
 
-8.	### Edit the wp-config.php file
+12.	### Edit the wp-config.php file
 ~~~
 sudo vi /var/www/html/wp-config.php
 Update the Database Credentials using the credentials of the RDS created in this project
 ~~~
 
-9.	### Restart the webserver
+13.	### Restart the webserver
 ~~~
 sudo service httpd restart
 ~~~
 
 
-10.	### Navigate to EC2 dashboard, Select the ALB DNS Name and open it on any browser to open WordPress
+14.	### Navigate to EC2 dashboard, Select the ALB DNS Name and open it on any browser to open WordPress
 
 
 
@@ -481,26 +481,6 @@ sudo service httpd restart
 - Select **t2 micro**
 - Under **Network** Select “WordPress VPC” from the dropdown menu
 - For the **Subnet** Select “Private Subnet1” (App Tier) from the dropdown menu
-- Under **Additional Details**, Copy and Paste the following commands in the **User data**
-~~~
-                  #!/bin/bash
-             yum update -y
-             sudo yum install -y httpd httpd-tools mod_ssl
-             sudo systemctl enable httpd
-             sudo systemctl start httpd
-             sudo amazon-linux-extras enable php7.4
-             sudo yum clean metadata
-             sudo yum install php php-common php-pear -y
-             sudo yum install php-{cgi,curl,mbstring,gd,mysqlnd,gettext,json,xml,fpm,intl,zip} -y
-             sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-             sudo yum install mysql-community-server -y
-             sudo systemctl enable mysqld
-             sudo systemctl start mysqld
-             echo "<Enter The EFS Credential here> /var/www/html nfs4  nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
-             mount -a
-             service httpd restart
-~~~
-
 - Click **Next**, Leave everything as default
 - Click **Next**, Give it a **name**;
 - Click **Next**
