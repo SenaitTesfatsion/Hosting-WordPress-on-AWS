@@ -368,7 +368,7 @@ sudo mkdir -p /var/www/html
 - Select **Mount via DNS**
 - Copy the one under **Using the NFS client**
 - Paste it on the environment variable
-~~~
+- 
 # environment variable
 ~~~
 EFS_DNS_NAME=fs-064e9505819af10a4.efs.us-east-1.amazonaws.com
@@ -387,6 +387,7 @@ sudo systemctl start httpd
 ~~~
 
 3.# install php 8 along with several necessary extensions for wordpress to run
+
 ~~~
 sudo dnf install -y \
 php \
@@ -411,6 +412,7 @@ php-tokenizer
 ~~~
 
 4.	### Install mysql version 8 community repository
+   
 ~~~
 sudo wget https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm 
 ~~~
